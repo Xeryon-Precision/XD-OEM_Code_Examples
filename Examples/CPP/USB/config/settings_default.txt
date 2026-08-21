@@ -1,0 +1,78 @@
+% RnD_XLS-1-40-312_S-202505-095
+% For use with Windows Interface V4_2_59
+% payload: 	
+% environment: 	
+
+INFO=4
+POLI=97
+FREQ=173000
+FRQ2=170000
+HFRQ=174000
+LFRQ=168000
+LLIM=-12.5
+HLIM=12.5
+PROP=120
+PRO2=90
+MPRO=250
+INTF=15
+MASS=0 % TRANS
+MMAS=1000 %NPT
+ZON1=0.01 %TRANS
+ZON2=1 %TRANS
+
+MSPD=200
+SSPD=100 %TRANS
+ISPD=10 %TRANS
+ACCE=65500
+DECE=255
+
+ILIM=4000
+ELIM=0%15000
+SLIM=100000
+ENCD=1
+ACTD=1
+ENCO=14
+
+PTOL=2
+PTO2=4
+TOUT=1000
+TOU2=60
+TOU3=0
+
+PHAC=0
+PHAS=90 %TRANS
+DUCO=0
+MIMP=20 %TRANS
+MAMP=45 %TRANS
+AMPL=45 %TRANS
+DUTY=32768
+OFSA=0
+OFSB=0
+SQEZ=0
+FILE=0
+FILG=0
+FILA=1
+FILP=1
+COMP=0
+DLAY=10
+
+DTIM=0
+ECHO=0
+INDA=1
+ENBR=1
+ENBL=0
+GPIO=0
+PLIM=0
+UART=0 %NPT
+PWMF=1000 %NPT
+TRGS=0
+TRGW=0
+TRGP=0
+TRGN=0
+STPS=1%NPT
+
+LEAD=0 %NPT
+FLAG=0 %NPT
+% generated with version 6.4 	
+% NPT: these settings are Not Passed Through (NPT) by the windows interface, thus are not sent to the controller.
+% TRANS: these settings are translated by the windows interface before being sent to the controller.

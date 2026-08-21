@@ -1,0 +1,14 @@
+.vs/
+build/
+out/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+*.json
+*.swp
+*.vcxproj
+*.vcxproj.filters
+*.sln
+*.user
+*.log

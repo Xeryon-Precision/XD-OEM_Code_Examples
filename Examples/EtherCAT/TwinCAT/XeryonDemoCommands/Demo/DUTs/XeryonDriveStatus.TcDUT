@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="XeryonDriveStatus" Id="{60a4fdd4-baee-43d4-aa0b-d905035e1fc6}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE XeryonDriveStatus :
+(	
+	Waiting := 0,
+	Ready := 1,
+	Error := 2,
+	SoftError := 3
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

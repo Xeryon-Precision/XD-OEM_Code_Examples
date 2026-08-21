@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="XeryonDriveError" Id="{e7ce6e28-7b26-4eb5-b740-77f1a8af9aee}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE XeryonDriveError :
+(
+	NO_ERROR := 0,	
+	LIMIT_HIT := 1,
+	NO_INDEX := 2,
+	THERMAL_1 := 3,
+	THERMAL_2 := 4,
+	ENCODER_ERROR := 5,
+	SAFETY_TIMEOUT := 6,
+	ERROR_LIMIT := 7,
+	ESTOP := 8,
+	POS_FAIL := 9,
+	DRIVE_DISABLED := 10
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

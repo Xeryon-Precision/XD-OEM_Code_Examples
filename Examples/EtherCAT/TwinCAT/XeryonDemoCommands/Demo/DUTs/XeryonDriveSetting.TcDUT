@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <DUT Name="XeryonDriveSetting" Id="{d9a9f8c7-1aed-4c78-88c0-18b8d4c75826}">
+    <Declaration><![CDATA[TYPE XeryonDriveSetting :
+STRUCT
+	setting : STRING(5);
+	value : DINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

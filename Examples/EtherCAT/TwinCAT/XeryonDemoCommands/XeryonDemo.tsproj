@@ -1,0 +1,865 @@
+<?xml version="1.0"?>
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.75">
+	<DataTypes>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-002000000002}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..1] OF BIT</Name>
+			<BitSize>2</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>2</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{336D951B-4AC5-E4B7-B97B-3373C989D30F}">STRING</Name>
+			<BitSize>32</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000002}">USINT</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>4</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-002000000018}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..2] OF BYTE</Name>
+			<BitSize>24</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000001}">BYTE</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>3</Elements>
+			</ArrayInfo>
+		</DataType>
+	</DataTypes>
+	<ImageDatas>
+		<ImageData Id="1000">424d1a030000000000007a0000006c000000100000000e0000000100180000000000a0020000232e0000232e000000000000000000004247527300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000ffffffffffffffffff000000000000ffffffffffffffffffffffffffffffffffffffffff000000000000000000ffffffffffffffffffffffffffffff000000000000000000ffffffffffffffffffffffff000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000ffffff000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff4cb1224cb122ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff4cb1224cb1224cb1224cb122ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff4cb1224cb1224cb122ffffff4cb1224cb1224cb122ffffffffffffffffffffffffffffffffffffffffffffffff4cb1224cb1224cb122ffffffffffffffffffffffff4cb1224cb1224cb122ffffffffffffffffffffffffffffff4cb1224cb1224cb122ffffffffffffffffffffffffffffffffffffffffff4cb1224cb122ffffffffffffffffff4cb1224cb1224cb122ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff4cb122ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff</ImageData>
+	</ImageDatas>
+	<Project ProjectGUID="{62A2D208-2A19-4A01-8781-4632A45CD175}" Target64Bit="true" ShowHideConfigurations="#x106">
+		<System>
+			<Settings MaxCpus="8">
+				<IoIdleTask CycleTime="50000"/>
+			</Settings>
+			<Tasks>
+				<Task Id="3" Priority="20" CycleTime="10000" AmsPort="350" AdtTasks="true">
+					<Name>PlcTask</Name>
+				</Task>
+			</Tasks>
+		</System>
+		<Plc>
+			<Project GUID="{25E6BECC-6915-41FA-A017-D7A96F51B376}" Name="Demo" PrjFilePath="Demo\Demo.plcproj" TmcFilePath="Demo\Demo.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Demo\Demo.tmc" TmcHash="{ADED7748-2EA7-D1F7-FEAC-54CF640A3362}">
+					<Name>Demo Instance</Name>
+					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Vars VarGrpType="1">
+						<Name>PlcTask Inputs</Name>
+						<Var>
+							<Name>MAIN.Drive1.iDriveActualPosition</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveAmplifiersEnabled</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveThermalProtection1</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveThermalProtection2</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveForceZero</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveMotorOn</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveClosedLoop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveEncoderIndex</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveEncoderValid</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveSearchingIndex</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDrivePositionReached</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveErrorCompensation</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveEncoderError</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveScanning</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveLeftEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveRightEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveErrorLimit</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveSearchingOptimalFrequency</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveSafetyTimeoutTriggered</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveBusy</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveEmergencyStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDrivePositionFail</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.iDriveSlot</Name>
+							<Type>USINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveActualPosition</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveAmplifiersEnabled</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveThermalProtection1</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveThermalProtection2</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveForceZero</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveMotorOn</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveClosedLoop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveEncoderIndex</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveEncoderValid</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveSearchingIndex</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDrivePositionReached</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveErrorCompensation</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveEncoderError</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveScanning</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveLeftEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveRightEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveErrorLimit</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveSearchingOptimalFrequency</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveSafetyTimeoutTriggered</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveBusy</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveEmergencyStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDrivePositionFail</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.iDriveSlot</Name>
+							<Type>USINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveActualPosition</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveAmplifiersEnabled</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveThermalProtection1</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveThermalProtection2</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveForceZero</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveMotorOn</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveClosedLoop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveEncoderIndex</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveEncoderValid</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveSearchingIndex</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDrivePositionReached</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveErrorCompensation</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveEncoderError</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveScanning</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveLeftEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveRightEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveErrorLimit</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveSearchingOptimalFrequency</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveSafetyTimeoutTriggered</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveBusy</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveEmergencyStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDrivePositionFail</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.iDriveSlot</Name>
+							<Type>USINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveActualPosition</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveAmplifiersEnabled</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveThermalProtection1</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveThermalProtection2</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveForceZero</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveMotorOn</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveClosedLoop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveEncoderIndex</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveEncoderValid</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveSearchingIndex</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDrivePositionReached</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveErrorCompensation</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveEncoderError</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveScanning</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveLeftEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveRightEndStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveErrorLimit</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveSearchingOptimalFrequency</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveSafetyTimeoutTriggered</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveBusy</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveEmergencyStop</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDrivePositionFail</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.iDriveSlot</Name>
+							<Type>USINT</Type>
+						</Var>
+					</Vars>
+					<Vars VarGrpType="2" AreaNo="1">
+						<Name>PlcTask Outputs</Name>
+						<Var>
+							<Name>MAIN.Drive1.qDriveTargetPos</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.qDriveSpeed</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.qDriveAcc</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.qDriveDec</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.qCommand</Name>
+							<Type>STRING(4)</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive1.qExecute</Name>
+							<Type>USINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.qDriveTargetPos</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.qDriveSpeed</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.qDriveAcc</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.qDriveDec</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.qCommand</Name>
+							<Type>STRING(4)</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive2.qExecute</Name>
+							<Type>USINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.qDriveTargetPos</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.qDriveSpeed</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.qDriveAcc</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.qDriveDec</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.qCommand</Name>
+							<Type>STRING(4)</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive3.qExecute</Name>
+							<Type>USINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.qDriveTargetPos</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.qDriveSpeed</Name>
+							<Type>DINT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.qDriveAcc</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.qDriveDec</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.qCommand</Name>
+							<Type>STRING(4)</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Drive4.qExecute</Name>
+							<Type>USINT</Type>
+						</Var>
+					</Vars>
+					<Contexts>
+						<Context>
+							<Id>0</Id>
+							<Name>PlcTask</Name>
+							<ManualConfig>
+								<OTCID>#x02010030</OTCID>
+							</ManualConfig>
+							<Priority>20</Priority>
+							<CycleTime>1000000</CycleTime>
+						</Context>
+					</Contexts>
+					<TaskPouOids>
+						<TaskPouOid Prio="20" OTCID="#x08502001"/>
+					</TaskPouOids>
+				</Instance>
+			</Project>
+		</Plc>
+		<Io>
+			<Device Id="1" DevType="111" DevFlags="#x0003" AmsPort="28673" AmsNetId="172.22.11.1.2.1" RemoteName="Device 1 (EtherCAT)" InfoImageId="2">
+				<Name>Device 1 (EtherCAT)</Name>
+				<AddressInfo>
+					<Pnp>
+						<DeviceDesc>Ethernet 3 (ASIX USB to Gigabit Ethernet Family Ada</DeviceDesc>
+						<DeviceName>\DEVICE\{57B4B331-1ADA-4DCF-BAF2-DBCE24DF3D22}</DeviceName>
+						<DeviceData>4cea41631744</DeviceData>
+					</Pnp>
+				</AddressInfo>
+				<Image Id="1" AddrType="9" ImageType="3">
+					<Name>Image</Name>
+				</Image>
+				<Box Id="1" BoxType="9099">
+					<Name>Box 1 (Drive)</Name>
+					<ImageId>1000</ImageId>
+					<EtherCAT SlaveType="1" PdiType="#x0180" CycleMBoxPollingTime="0" VendorId="#x0000004e" ProductCode="#x00000001" RevisionNo="#x00000001" CheckRevisionNoType="2" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Drive" Desc="Drive" PortABoxInfo="#x00ffffff">
+						<SyncMan>001014006400010003000000000000000000001064010000</SyncMan>
+						<SyncMan>001208002000010004000000000000000000001220010000</SyncMan>
+						<Fmmu>0000000000000000001000020100000001000000000000000000000000000000</Fmmu>
+						<Fmmu>0000000000000000001200010100000002000000000000000000000000000000</Fmmu>
+						<DcMode>534d5f53796e63206f72204173796e00534d5f53796e63206f72204173796e6300000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<Pdo Name="Status" Index="#x1a00" Flags="#x0011" SyncMan="1">
+							<Entry Name="Actual position" Index="#x0001" Sub="#x01">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Amplifiers enabled" Index="#x0001" Sub="#x02">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="End stop" Index="#x0001" Sub="#x03">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Thermal protection 1" Index="#x0001" Sub="#x04">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Thermal protection 2" Index="#x0001" Sub="#x04">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Force zero" Index="#x0001" Sub="#x06">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Motor on" Index="#x0001" Sub="#x07">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Closed loop" Index="#x0001" Sub="#x08">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Encoder index" Index="#x0001" Sub="#x09">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Encoder valid" Index="#x0001" Sub="#x0a">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Searching index" Index="#x0001" Sub="#x0b">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Position reached" Index="#x0001" Sub="#x0c">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Error compensation" Index="#x0001" Sub="#x0d">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Encoder error " Index="#x0001" Sub="#x0e">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Scanning" Index="#x0001" Sub="#x0f">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Left end stop" Index="#x0001" Sub="#x10">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Right end stop" Index="#x0001" Sub="#x11">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Error limit" Index="#x0001" Sub="#x12">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Searching optimal frequency" Index="#x0001" Sub="#x13">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Safety timeout" Index="#x0001" Sub="#x14">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Execute ack" Index="#x0001" Sub="#x15">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Emergency stop" Index="#x0001" Sub="#x16">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Position fail" Index="#x0001" Sub="#x17">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry>
+								<Type GUID="{18071995-0000-0000-0000-002000000002}">ARRAY [0..1] OF BIT</Type>
+							</Entry>
+							<Entry Name="Slot" Index="#x0001" Sub="#x16">
+								<Type>BYTE</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Position" Index="#x1600" InOut="1" Flags="#x0011" SyncMan="0">
+							<Entry Name="Command" Index="#x0002" Sub="#x01">
+								<Type GUID="{336D951B-4AC5-E4B7-B97B-3373C989D30F}">STRING</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x0002" Sub="#x02">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Speed" Index="#x0002" Sub="#x03">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Acceleration" Index="#x0002" Sub="#x04">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Deceleration" Index="#x0002" Sub="#x05">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Execute" Index="#x0002" Sub="#x06">
+								<Type>BYTE</Type>
+							</Entry>
+							<Entry>
+								<Type GUID="{18071995-0000-0000-0000-002000000018}">ARRAY [0..2] OF BYTE</Type>
+							</Entry>
+						</Pdo>
+					</EtherCAT>
+				</Box>
+				<Box Id="2" Disabled="true" BoxType="9099">
+					<Name>Box 2 (Drive)</Name>
+					<ImageId>1000</ImageId>
+					<EtherCAT SlaveType="1" PdiType="#x0180" CycleMBoxPollingTime="0" VendorId="#x0000004e" ProductCode="#x00000001" RevisionNo="#x00000001" CheckRevisionNoType="2" PortPhys="17" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="Drive" Desc="Drive" PortABoxInfo="#x01000001">
+						<SyncMan>001014006400010003000000000000000000001064010000</SyncMan>
+						<SyncMan>001208002000010004000000000000000000001220010000</SyncMan>
+						<Fmmu>0000000000000000001000020100000001000000000000000000000000000000</Fmmu>
+						<Fmmu>0000000000000000001200010100000002000000000000000000000000000000</Fmmu>
+						<DcMode>534d5f53796e63206f72204173796e00534d5f53796e63206f72204173796e6300000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000</DcMode>
+						<Pdo Name="Status" Index="#x1a00" Flags="#x0011" SyncMan="1">
+							<Entry Name="Actual position" Index="#x0001" Sub="#x01">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Amplifiers enabled" Index="#x0001" Sub="#x02">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="End stop" Index="#x0001" Sub="#x03">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Thermal protection 1" Index="#x0001" Sub="#x04">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Thermal protection 2" Index="#x0001" Sub="#x04">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Force zero" Index="#x0001" Sub="#x06">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Motor on" Index="#x0001" Sub="#x07">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Closed loop" Index="#x0001" Sub="#x08">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Encoder index" Index="#x0001" Sub="#x09">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Encoder valid" Index="#x0001" Sub="#x0a">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Searching index" Index="#x0001" Sub="#x0b">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Position reached" Index="#x0001" Sub="#x0c">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Error compensation" Index="#x0001" Sub="#x0d">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Encoder error " Index="#x0001" Sub="#x0e">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Scanning" Index="#x0001" Sub="#x0f">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Left end stop" Index="#x0001" Sub="#x10">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Right end stop" Index="#x0001" Sub="#x11">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Error limit" Index="#x0001" Sub="#x12">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Searching optimal frequency" Index="#x0001" Sub="#x13">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Safety timeout" Index="#x0001" Sub="#x14">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Execute ack" Index="#x0001" Sub="#x15">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Emergency stop" Index="#x0001" Sub="#x16">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry Name="Position fail" Index="#x0001" Sub="#x17">
+								<Type>BIT</Type>
+							</Entry>
+							<Entry>
+								<Type GUID="{18071995-0000-0000-0000-002000000002}">ARRAY [0..1] OF BIT</Type>
+							</Entry>
+							<Entry Name="Slot" Index="#x0001" Sub="#x16">
+								<Type>BYTE</Type>
+							</Entry>
+						</Pdo>
+						<Pdo Name="Position" Index="#x1600" InOut="1" Flags="#x0011" SyncMan="0">
+							<Entry Name="Command" Index="#x0002" Sub="#x01">
+								<Type GUID="{336D951B-4AC5-E4B7-B97B-3373C989D30F}">STRING</Type>
+							</Entry>
+							<Entry Name="Target position" Index="#x0002" Sub="#x02">
+								<Type>DINT</Type>
+							</Entry>
+							<Entry Name="Speed" Index="#x0002" Sub="#x03">
+								<Type>UDINT</Type>
+							</Entry>
+							<Entry Name="Acceleration" Index="#x0002" Sub="#x04">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Deceleration" Index="#x0002" Sub="#x05">
+								<Type>UINT</Type>
+							</Entry>
+							<Entry Name="Execute" Index="#x0002" Sub="#x06">
+								<Type>BYTE</Type>
+							</Entry>
+							<Entry>
+								<Type GUID="{18071995-0000-0000-0000-002000000018}">ARRAY [0..2] OF BYTE</Type>
+							</Entry>
+						</Pdo>
+					</EtherCAT>
+				</Box>
+				<EtherCAT PromiscuousMode="true"/>
+			</Device>
+		</Io>
+		<SymbolWatch>
+			<Variable>TIID^Device 1 (EtherCAT)^Box 1 (Drive)^Status^Searching index</Variable>
+		</SymbolWatch>
+	</Project>
+	<Mappings>
+		<MappingInfo Identifier="{00000000-2001-0850-0020-500810000403}" Id="#x02030010"/>
+		<OwnerA Name="TIPC^Demo^Demo Instance">
+			<OwnerB Name="TIID^Device 1 (EtherCAT)^Box 1 (Drive)">
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveActualPosition" VarB="Status^Actual position"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveAmplifiersEnabled" VarB="Status^Amplifiers enabled"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveBusy" VarB="Status^Execute ack"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveClosedLoop" VarB="Status^Closed loop"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveEmergencyStop" VarB="Status^Emergency stop"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveEncoderError" VarB="Status^Encoder error "/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveEncoderIndex" VarB="Status^Encoder index"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveEncoderValid" VarB="Status^Encoder valid"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveEndStop" VarB="Status^End stop"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveErrorCompensation" VarB="Status^Error compensation"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveErrorLimit" VarB="Status^Error limit"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveForceZero" VarB="Status^Force zero"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveLeftEndStop" VarB="Status^Left end stop"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveMotorOn" VarB="Status^Motor on"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDrivePositionFail" VarB="Status^Position fail"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDrivePositionReached" VarB="Status^Position reached"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveRightEndStop" VarB="Status^Right end stop"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveSafetyTimeoutTriggered" VarB="Status^Safety timeout"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveScanning" VarB="Status^Scanning"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveSearchingIndex" VarB="Status^Searching index"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveSearchingOptimalFrequency" VarB="Status^Searching optimal frequency"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveSlot" VarB="Status^Slot"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveThermalProtection1" VarB="Status^Thermal protection 1"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive1.iDriveThermalProtection2" VarB="Status^Thermal protection 2"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive1.qCommand" VarB="Position^Command"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive1.qDriveAcc" VarB="Position^Acceleration"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive1.qDriveDec" VarB="Position^Deceleration"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive1.qDriveSpeed" VarB="Position^Speed"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive1.qDriveTargetPos" VarB="Position^Target position"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive1.qExecute" VarB="Position^Execute"/>
+			</OwnerB>
+			<OwnerB Name="TIID^Device 1 (EtherCAT)^Box 2 (Drive)">
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveActualPosition" VarB="Status^Actual position"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveAmplifiersEnabled" VarB="Status^Amplifiers enabled"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveBusy" VarB="Status^Execute ack"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveClosedLoop" VarB="Status^Closed loop"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveEmergencyStop" VarB="Status^Emergency stop"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveEncoderError" VarB="Status^Encoder error "/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveEncoderIndex" VarB="Status^Encoder index"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveEncoderValid" VarB="Status^Encoder valid"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveEndStop" VarB="Status^End stop"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveErrorCompensation" VarB="Status^Error compensation"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveErrorLimit" VarB="Status^Error limit"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveForceZero" VarB="Status^Force zero"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveLeftEndStop" VarB="Status^Left end stop"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveMotorOn" VarB="Status^Motor on"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDrivePositionFail" VarB="Status^Position fail"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDrivePositionReached" VarB="Status^Position reached"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveRightEndStop" VarB="Status^Right end stop"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveSafetyTimeoutTriggered" VarB="Status^Safety timeout"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveScanning" VarB="Status^Scanning"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveSearchingIndex" VarB="Status^Searching index"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveSearchingOptimalFrequency" VarB="Status^Searching optimal frequency"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveSlot" VarB="Status^Slot"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveThermalProtection1" VarB="Status^Thermal protection 1"/>
+				<Link VarA="PlcTask Inputs^MAIN.Drive2.iDriveThermalProtection2" VarB="Status^Thermal protection 2"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive2.qCommand" VarB="Position^Command"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive2.qDriveAcc" VarB="Position^Acceleration"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive2.qDriveDec" VarB="Position^Deceleration"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive2.qDriveSpeed" VarB="Position^Speed"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive2.qDriveTargetPos" VarB="Position^Target position"/>
+				<Link VarA="PlcTask Outputs^MAIN.Drive2.qExecute" VarB="Position^Execute"/>
+			</OwnerB>
+		</OwnerA>
+	</Mappings>
+</TcSmProject>

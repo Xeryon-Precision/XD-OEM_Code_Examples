@@ -1,0 +1,739 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="MAIN" Id="{a254a0d2-6c2f-47f0-b85c-2f1fe0a02e42}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	Drive1 : XeryonDrive;
+	Drive2 : XeryonDrive;
+	Drive3 : XeryonDrive;
+	Drive4 : XeryonDrive;
+	
+	drive1Enable : BOOL;
+	drive1EnableOld : BOOL;
+	drive1Index : BOOL;
+	drive1MoveAbs : BOOL;	
+	drive1Dpos : BOOL;		
+	drive1Halt : BOOL;
+	drive1Stop : BOOL;	
+	drive2ResetEncoder : BOOL;	
+	drive1ResetEncoder : BOOL;	
+	drive1Reset : BOOL;	
+	drive1MoveP : BOOL;	
+	drive1MoveN : BOOL;		
+	drive1JogP : BOOL;	
+	drive1JogN : BOOL;	
+	drive1Init : BOOL;
+	
+	drive1State : INT;
+	drive1Target : DINT;
+	drive1Speed: UDINT := 1000000;
+	drive1Acc: UINT := 65535;
+	drive1Dec: UINT := 3500;
+	drive1ErrorString: STRING;
+	
+	
+	
+	drive2Enable : BOOL;
+	drive2EnableOld : BOOL;
+	drive2Index : BOOL;
+	drive2MoveAbs : BOOL;		
+	drive2Dpos : BOOL;	
+	drive2Halt : BOOL;
+	drive2Stop : BOOL;	
+	drive2Reset : BOOL;	
+	drive2JogP : BOOL;	
+	drive2JogN : BOOL;	
+	drive2Init : BOOL;
+	
+	drive2State : INT;
+	drive2Target : DINT;
+	drive2Speed: UDINT := 150000;
+	drive2Acc: UINT := 10000;
+	drive2Dec: UINT := 10000;
+	
+	
+	drive3Enable : BOOL;
+	drive3EnableOld : BOOL;
+	drive3Index : BOOL;
+	drive3MoveAbs : BOOL;		
+	drive3Dpos : BOOL;		
+	drive3Halt : BOOL;
+	drive3Stop : BOOL;	
+	drive3Reset : BOOL;	
+	drive3JogP : BOOL;	
+	drive3JogN : BOOL;	
+	drive3Init : BOOL;
+	
+	drive3State : INT;
+	drive3Target : DINT;
+	drive3Speed: UDINT := 150000;
+	drive3Acc: UINT := 10000;
+	drive3Dec: UINT := 10000;
+
+
+	drive4Enable : BOOL;
+	drive4EnableOld : BOOL;
+	drive4Index : BOOL;
+	drive4MoveAbs : BOOL;		
+	drive4Dpos : BOOL;		
+	drive4Halt : BOOL;
+	drive4Stop : BOOL;	
+	drive4Reset : BOOL;	
+	drive4JogP : BOOL;	
+	drive4JogN : BOOL;	
+	drive4Init : BOOL;
+	
+	drive4State : INT;
+	drive4Target : DINT;
+	drive4Speed: UDINT := 150000;
+	drive4Acc: UINT := 10000;
+	drive4Dec: UINT := 10000;
+
+	
+	target_min : DINT;
+	target_max : DINT;
+	
+	speed_min : DINT;
+	speed_max : DINT;
+	
+	acc_min : DINT;
+	acc_max : DINT;
+	dec_min : DINT;
+	dec_max : DINT;
+	
+	drive2ErrorString: STRING;
+	drive3ErrorString: STRING;
+	drive4ErrorString: STRING;
+	dpos: DINT;
+	drive2MoveN: BOOL;
+	Halt: INT;
+	drive2MoveP: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[DRIVE_SETTINGS();
+
+Drive1();
+Drive2();
+Drive3();
+Drive4();
+drive1ErrorString := TO_STRING(Drive1.Error);
+drive2ErrorString := TO_STRING(Drive2.Error);
+drive3ErrorString := TO_STRING(Drive3.Error);
+drive4ErrorString := TO_STRING(Drive4.Error);
+// DEMO Drive 1
+CASE drive1State OF
+	0:
+		IF(drive1JogP) THEN
+			drive1State := 10;
+		END_IF
+		IF(drive1JogN) THEN
+			drive1State := 14;
+		END_IF
+		IF(drive1MoveP) THEN
+			drive1State := 17;
+		END_IF
+		IF(drive1MoveN) THEN
+			drive1State := 20;
+		END_IF
+		IF(drive1Init) THEN
+			drive1State := 9;
+		END_IF
+		IF(drive1MoveAbs) THEN
+			drive1State := 2;
+		END_IF
+		IF(drive1Index) THEN
+			drive1State := 1;
+		END_IF
+		IF(drive1Dpos) THEN
+			drive1State := 8;
+		END_IF
+	1:
+		IF(NOT drive1Index) THEN
+			IF(Drive1.Index(drive1Target > 0, drive1Speed, drive1Acc, drive1Dec)<> XeryonDriveStatus.Waiting) THEN
+				drive1State := 0;
+			END_IF
+		END_IF
+	2:
+		IF(Drive1.MoveAbsolute(dpos, drive1Speed, drive1Acc, drive1Dec)<> XeryonDriveStatus.Waiting) THEN
+			IF(dpos < 921600) THEN
+				dpos:=dpos+25600;
+			ELSE
+				dpos := 1000;
+			END_IF
+			drive1State := 0;
+		END_IF
+	3:
+		IF(Drive1.MoveAbsolute(-40000, drive1Speed, drive1Acc, drive1Dec)<> XeryonDriveStatus.Waiting) THEN
+			drive1State := 4;
+		END_IF
+	4: 
+		IF(Drive1.MoveAbsolute(0, drive1Speed, drive1Acc, drive1Dec)<> XeryonDriveStatus.Waiting) THEN
+			drive1State := 5;
+		END_IF
+	5: 
+		IF(Drive1.MoveAbsolute(-10000, drive1Speed, drive1Acc, drive1Dec)<> XeryonDriveStatus.Waiting) THEN
+			drive1State := 6;
+		END_IF
+	6: 
+		IF(Drive1.MoveAbsolute(0, drive1Speed, drive1Acc, drive1Dec)<> XeryonDriveStatus.Waiting) THEN
+			drive1State := 7;
+		END_IF		
+	7: 
+		IF(Drive1.MoveAbsolute(-5000, drive1Speed, drive1Acc, drive1Dec)<> XeryonDriveStatus.Waiting) THEN
+			drive1State := 0;
+		END_IF
+	8:
+		IF(NOT drive1Dpos) THEN
+			IF(Drive1.MoveAbsolute(drive1Target, drive1Speed, drive1Acc, drive1Dec)<> XeryonDriveStatus.Waiting) THEN
+				drive1State := 0;
+			END_IF
+		END_IF
+	9:
+		IF(Drive1.Init(GVL.Drive1Settings) = TRUE) THEN
+			drive1State := 0;
+		END_IF
+	10:
+		IF(Drive1.Scan(TRUE, drive1Speed, drive1Acc, drive1Dec) <>  XeryonDriveStatus.Waiting) THEN
+			drive1State := 12;
+		END_IF
+	12: //TBD GST : why is this state needed???
+		IF(NOT drive1JogP) THEN
+			drive1State := 13;
+		END_IF
+	13:
+		IF(Drive1.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive1State := 0;
+		END_IF
+	14:
+		IF(Drive1.Scan(FALSE, drive1Speed, drive1Acc, drive1Dec) <>  XeryonDriveStatus.Waiting) THEN
+			drive1State := 15;
+		END_IF
+	15:
+		IF(NOT drive1JogN) THEN
+			drive1State := 16;
+		END_IF
+	16:
+		IF(Drive1.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive1State := 0;
+		END_IF
+		
+	17:
+		IF(Drive1.MoveOpen(TRUE) <>  XeryonDriveStatus.Waiting) THEN
+			drive1State := 18;
+		END_IF
+	18:
+		IF(NOT drive1MoveP) THEN
+			drive1State := 19;
+		END_IF
+	19:
+		IF(Drive1.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive1State := 0;
+		END_IF
+	20:
+		IF(Drive1.MoveOpen(FALSE) <>  XeryonDriveStatus.Waiting) THEN
+			drive1State := 21;
+		END_IF
+	21:
+		IF(NOT drive1MoveN) THEN
+			drive1State := 22;
+		END_IF
+	22:
+		IF(Drive1.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive1State := 0;
+		END_IF	
+			
+END_CASE
+
+IF(drive1Halt) THEN
+	Drive1.Halt();
+END_IF
+IF(drive1Enable <> drive1EnableOld) THEN	
+	IF(Drive1.Enable(drive1Enable) <> XeryonDriveStatus.Waiting) THEN
+		drive1EnableOld := drive1Enable;	
+	END_IF
+END_IF
+IF(drive1Stop) THEN
+	Drive1.Stop();
+END_IF
+IF(drive1Reset) THEN
+	Drive1.Reset();
+END_IF
+IF(drive1ResetEncoder) THEN
+	Drive1.ResetEncoder();
+END_IF
+
+// DEMO Drive 2
+CASE drive2State OF
+	0:
+		IF(drive2JogP) THEN
+			drive2State := 10;
+		END_IF
+		IF(drive2JogN) THEN
+			drive2State := 14;
+		END_IF
+		IF(drive2MoveP) THEN
+			drive2State := 17;
+		END_IF
+		IF(drive2MoveN) THEN
+			drive2State := 20;
+		END_IF
+		IF(drive2Init) THEN
+			drive2State := 9;
+		END_IF
+		IF(drive2MoveAbs) THEN
+			drive2State := 2;
+		END_IF
+		IF(drive2Index) THEN
+			drive2State := 1;
+		END_IF
+		IF(drive2Dpos) THEN
+			drive2State := 8;
+		END_IF
+	1:
+		IF(NOT drive2Index) THEN
+			IF(Drive2.Index(drive2Target > 0, drive2Speed, drive2Acc, drive2Dec)<> XeryonDriveStatus.Waiting) THEN
+				drive2State := 0;
+			END_IF
+		END_IF
+	2:
+		IF(Drive2.MoveAbsolute(40000, drive2Speed, drive2Acc, drive2Dec)<> XeryonDriveStatus.Waiting) THEN
+			drive2State := 3;
+		END_IF
+	3: 
+		IF(Drive2.MoveAbsolute(0, drive2Speed, drive2Acc, drive2Dec)<> XeryonDriveStatus.Waiting) THEN
+			drive2State := 4;
+		END_IF
+	4: 
+		IF(Drive2.MoveAbsolute(-40000, drive2Speed, drive2Acc, drive2Dec)<> XeryonDriveStatus.Waiting) THEN
+			drive2State := 5;
+		END_IF
+	5: 
+		IF(Drive2.MoveAbsolute(-10000, drive2Speed, drive2Acc, drive2Dec)<> XeryonDriveStatus.Waiting) THEN
+			drive2State := 6;
+		END_IF
+	6: 
+		IF(Drive2.MoveAbsolute(-5000, drive2Speed, drive2Acc, drive2Dec)<> XeryonDriveStatus.Waiting) THEN
+			drive2State := 7;
+		END_IF		
+	7: 
+		IF(Drive2.MoveAbsolute(0, drive2Speed, drive2Acc, drive2Dec)<> XeryonDriveStatus.Waiting) THEN
+			drive2State := 0;
+		END_IF
+	8:
+		IF(NOT drive2Dpos) THEN
+			IF(Drive2.MoveAbsolute(drive2Target, drive2Speed, drive2Acc, drive2Dec)<> XeryonDriveStatus.Waiting) THEN
+				drive2State := 0;
+			END_IF
+		END_IF
+	9:
+		IF(Drive2.Init(GVL.Drive2Settings) = TRUE) THEN
+			drive2State := 0;
+		END_IF
+	10:
+		IF(Drive2.Scan(TRUE, drive2Speed, drive2Acc, drive2Dec) <>  XeryonDriveStatus.Waiting) THEN
+			drive2State := 12;
+		END_IF
+	12:
+		IF(NOT drive2JogP) THEN
+			drive2State := 13;
+		END_IF
+	13:
+		IF(Drive2.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive2State := 0;
+		END_IF
+	14:
+		IF(Drive2.Scan(FALSE, drive2Speed, drive2Acc, drive2Dec) <>  XeryonDriveStatus.Waiting) THEN
+			drive2State := 15;
+		END_IF
+	15:
+		IF(NOT drive2JogN) THEN
+			drive2State := 16;
+		END_IF
+	16:
+		IF(Drive2.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive2State := 0;
+		END_IF
+	17:
+		IF(Drive2.MoveOpen(TRUE) <>  XeryonDriveStatus.Waiting) THEN
+			drive2State := 18;
+		END_IF
+	18:
+		IF(NOT drive2MoveP) THEN
+			drive2State := 19;
+		END_IF
+	19:
+		IF(Drive2.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive2State := 0;
+		END_IF
+	20:
+		IF(Drive2.MoveOpen(FALSE) <>  XeryonDriveStatus.Waiting) THEN
+			drive2State := 21;
+		END_IF
+	21:
+		IF(NOT drive2MoveN) THEN
+			drive2State := 22;
+		END_IF
+	22:
+		IF(Drive2.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive2State := 0;
+		END_IF
+END_CASE
+
+IF(drive2Halt) THEN
+	Drive2.Halt();
+END_IF
+IF(drive2Enable <> drive2EnableOld) THEN
+	IF(Drive2.Enable(drive2Enable) <> XeryonDriveStatus.Waiting) THEN
+		drive2EnableOld := drive2Enable;	
+	END_IF
+END_IF
+IF(drive2Stop) THEN
+	Drive2.Stop();
+END_IF
+IF(drive2Reset) THEN
+	Drive2.Reset();
+END_IF
+IF(drive2ResetEncoder) THEN
+	Drive2.ResetEncoder();
+END_IF
+
+// DEMO Drive 3
+CASE drive3State OF
+	0:
+		IF(drive3JogP) THEN
+			drive3State := 10;
+		END_IF
+		IF(drive3JogN) THEN
+			drive3State := 14;
+		END_IF
+		IF(drive3Init) THEN
+			drive3State := 9;
+		END_IF
+		IF(drive3MoveAbs) THEN
+			drive3State := 2;
+		END_IF
+		IF(drive3Index) THEN
+			drive3State := 1;
+		END_IF
+		IF(drive3Dpos) THEN
+			drive3State := 8;
+		END_IF
+	1:
+		IF(NOT drive3Index) THEN
+			IF(Drive3.Index(drive3Target  > 0, drive3Speed, drive3Acc, drive3Dec) <> XeryonDriveStatus.Waiting) THEN
+				drive3State := 0;
+			END_IF
+		END_IF
+	2:
+		IF(Drive3.MoveAbsolute(40000, drive3Speed, drive3Acc, drive3Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive3State := 3;
+		END_IF
+	3: 
+		IF(Drive3.MoveAbsolute(0, drive3Speed, drive3Acc, drive3Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive3State := 4;
+		END_IF
+	4: 
+		IF(Drive3.MoveAbsolute(-40000, drive3Speed, drive3Acc, drive3Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive3State := 5;
+		END_IF
+	5: 
+		IF(Drive3.MoveAbsolute(15000, drive3Speed, drive3Acc, drive3Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive3State := 6;
+		END_IF
+	6: 
+		IF(Drive3.MoveAbsolute(-15000, drive3Speed, drive3Acc, drive3Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive3State := 7;
+		END_IF		
+	7: 
+		IF(Drive3.MoveAbsolute(0, drive3Speed, drive3Acc, drive3Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive3State := 0;
+		END_IF
+	8:
+		IF(NOT drive3Dpos) THEN
+			IF(Drive3.MoveAbsolute(drive3Target, drive3Speed, drive3Acc, drive3Dec) <> XeryonDriveStatus.Waiting) THEN
+				drive3State := 0;
+			END_IF
+		END_IF
+	9:
+		IF(Drive3.Init(GVL.Drive3Settings) = TRUE) THEN
+			drive3State := 0;
+		END_IF
+	10:
+		IF(Drive3.Scan(TRUE, drive3Speed, drive3Acc, drive3Dec) <>  XeryonDriveStatus.Waiting) THEN
+			drive3State := 12;
+		END_IF
+	12:
+		IF(NOT drive3JogP) THEN
+			drive3State := 13;
+		END_IF
+	13:
+		IF(Drive3.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive3State := 0;
+		END_IF
+	14:
+		IF(Drive3.Scan(FALSE, drive3Speed, drive3Acc, drive3Dec) <>  XeryonDriveStatus.Waiting) THEN
+			drive3State := 15;
+		END_IF
+	15:
+		IF(NOT drive3JogN) THEN
+			drive3State := 16;
+		END_IF
+	16:
+		IF(Drive3.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive3State := 0;
+		END_IF		
+		
+END_CASE
+
+IF(drive3Halt) THEN
+	Drive3.Halt();
+END_IF
+IF(drive3Stop) THEN
+	Drive3.Stop();
+END_IF
+IF(drive3Enable <> drive3EnableOld) THEN
+	IF(Drive3.Enable(drive3Enable) <> XeryonDriveStatus.Waiting) THEN
+		drive3EnableOld := drive3Enable;	
+	END_IF
+END_IF
+IF(drive3Reset) THEN
+	Drive3.Reset();
+END_IF
+
+
+
+
+// DEMO Drive 4
+CASE drive4State OF
+	0:
+		IF(drive4JogP) THEN
+			drive4State := 10;
+		END_IF
+		IF(drive4JogN) THEN
+			drive4State := 14;
+		END_IF
+		IF(drive4Init) THEN
+			drive4State := 9;
+		END_IF
+		IF(drive4MoveAbs) THEN
+			drive4State := 2;
+		END_IF
+		IF(drive4Index) THEN
+			drive4State := 1;
+		END_IF
+		IF(drive4Dpos) THEN
+			drive4State := 8;
+		END_IF
+	1:
+		IF(NOT drive4Index) THEN
+			IF(Drive4.Index(drive4Target  > 0, drive4Speed, drive4Acc, drive4Dec) <> XeryonDriveStatus.Waiting) THEN
+				drive4State := 0;
+			END_IF
+		END_IF
+	2:
+		IF(Drive4.MoveAbsolute(0, drive4Speed, drive4Acc, drive4Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive4State := 3;
+		END_IF
+	3: 
+		IF(Drive4.MoveAbsolute(35000, drive4Speed, drive4Acc, drive4Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive4State := 4;
+		END_IF
+	4: 
+		IF(Drive4.MoveAbsolute(0, drive4Speed, drive4Acc, drive4Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive4State := 5;
+		END_IF
+	5: 
+		IF(Drive4.MoveAbsolute(-35000, drive4Speed, drive4Acc, drive4Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive4State := 6;
+		END_IF
+	6: 
+		IF(Drive4.MoveAbsolute(0, drive4Speed, drive4Acc, drive4Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive4State := 7;
+		END_IF		
+	7: 
+		IF(Drive4.MoveAbsolute(35000, drive4Speed, drive4Acc, drive4Dec) <> XeryonDriveStatus.Waiting) THEN
+			drive4State := 0;
+		END_IF
+	8:
+		IF(NOT drive4Dpos) THEN
+			IF(Drive4.MoveAbsolute(drive4Target, drive4Speed, drive4Acc, drive4Dec) <> XeryonDriveStatus.Waiting) THEN
+				drive4State := 0;
+			END_IF
+		END_IF
+	9:
+		IF(Drive4.Init(GVL.Drive4Settings) = TRUE) THEN
+			drive4State := 0;
+		END_IF
+	10:
+		IF(Drive4.Scan(TRUE, drive4Speed, drive4Acc, drive4Dec) <>  XeryonDriveStatus.Waiting) THEN
+			drive4State := 12;
+		END_IF
+	12:
+		IF(NOT drive4JogP) THEN
+			drive4State := 13;
+		END_IF
+	13:
+		IF(Drive4.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive4State := 0;
+		END_IF
+	14:
+		IF(Drive4.Scan(FALSE, drive4Speed, drive4Acc, drive4Dec) <>  XeryonDriveStatus.Waiting) THEN
+			drive4State := 15;
+		END_IF
+	15:
+		IF(NOT drive4JogN) THEN
+			drive4State := 16;
+		END_IF
+	16:
+		IF(Drive4.Halt() <>  XeryonDriveStatus.Waiting) THEN
+			drive4State := 0;
+		END_IF		
+		
+END_CASE
+
+IF(drive4Halt) THEN
+	Drive4.Halt();
+END_IF
+IF(drive4Stop) THEN
+	Drive4.Stop();
+END_IF
+IF(drive4Enable <> drive4EnableOld) THEN
+	IF(Drive4.Enable(drive4Enable) <> XeryonDriveStatus.Waiting) THEN
+		drive4EnableOld := drive4Enable;	
+	END_IF
+END_IF
+IF(drive4Reset) THEN
+	Drive4.Reset();
+END_IF
+
+
+target_max := 1843200;
+target_min := -1843200;
+
+speed_min := 0;
+speed_max := 1000000;
+
+
+acc_min := 0;
+acc_max := 65535;
+
+dec_min := 0;
+dec_max := 65535;]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="679" Count="1" />
+      <LineId Id="197" Count="0" />
+      <LineId Id="499" Count="1" />
+      <LineId Id="1095" Count="0" />
+      <LineId Id="501" Count="0" />
+      <LineId Id="902" Count="1" />
+      <LineId Id="1097" Count="0" />
+      <LineId Id="198" Count="0" />
+      <LineId Id="201" Count="0" />
+      <LineId Id="708" Count="5" />
+      <LineId Id="984" Count="5" />
+      <LineId Id="211" Count="0" />
+      <LineId Id="696" Count="0" />
+      <LineId Id="700" Count="0" />
+      <LineId Id="695" Count="0" />
+      <LineId Id="240" Count="1" />
+      <LineId Id="246" Count="2" />
+      <LineId Id="505" Count="2" />
+      <LineId Id="242" Count="0" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="287" Count="0" />
+      <LineId Id="255" Count="2" />
+      <LineId Id="288" Count="0" />
+      <LineId Id="214" Count="0" />
+      <LineId Id="1324" Count="0" />
+      <LineId Id="1331" Count="3" />
+      <LineId Id="1330" Count="0" />
+      <LineId Id="217" Count="0" />
+      <LineId Id="215" Count="0" />
+      <LineId Id="219" Count="14" />
+      <LineId Id="218" Count="0" />
+      <LineId Id="236" Count="1" />
+      <LineId Id="239" Count="0" />
+      <LineId Id="234" Count="0" />
+      <LineId Id="509" Count="4" />
+      <LineId Id="508" Count="0" />
+      <LineId Id="701" Count="0" />
+      <LineId Id="705" Count="1" />
+      <LineId Id="714" Count="4" />
+      <LineId Id="724" Count="3" />
+      <LineId Id="731" Count="0" />
+      <LineId Id="733" Count="1" />
+      <LineId Id="732" Count="0" />
+      <LineId Id="735" Count="10" />
+      <LineId Id="707" Count="0" />
+      <LineId Id="1013" Count="0" />
+      <LineId Id="990" Count="22" />
+      <LineId Id="702" Count="1" />
+      <LineId Id="212" Count="0" />
+      <LineId Id="207" Count="0" />
+      <LineId Id="202" Count="0" />
+      <LineId Id="294" Count="0" />
+      <LineId Id="609" Count="1" />
+      <LineId Id="612" Count="0" />
+      <LineId Id="698" Count="1" />
+      <LineId Id="295" Count="0" />
+      <LineId Id="298" Count="4" />
+      <LineId Id="296" Count="0" />
+      <LineId Id="1646" Count="1" />
+      <LineId Id="684" Count="0" />
+      <LineId Id="338" Count="2" />
+      <LineId Id="821" Count="0" />
+      <LineId Id="829" Count="0" />
+      <LineId Id="822" Count="4" />
+      <LineId Id="2209" Count="4" />
+      <LineId Id="2208" Count="0" />
+      <LineId Id="827" Count="1" />
+      <LineId Id="341" Count="5" />
+      <LineId Id="514" Count="2" />
+      <LineId Id="347" Count="29" />
+      <LineId Id="517" Count="5" />
+      <LineId Id="377" Count="0" />
+      <LineId Id="840" Count="26" />
+      <LineId Id="839" Count="0" />
+      <LineId Id="1753" Count="22" />
+      <LineId Id="1752" Count="0" />
+      <LineId Id="378" Count="3" />
+      <LineId Id="605" Count="1" />
+      <LineId Id="897" Count="1" />
+      <LineId Id="608" Count="0" />
+      <LineId Id="382" Count="6" />
+      <LineId Id="2430" Count="1" />
+      <LineId Id="389" Count="3" />
+      <LineId Id="830" Count="8" />
+      <LineId Id="393" Count="5" />
+      <LineId Id="529" Count="2" />
+      <LineId Id="399" Count="29" />
+      <LineId Id="523" Count="5" />
+      <LineId Id="429" Count="0" />
+      <LineId Id="869" Count="26" />
+      <LineId Id="867" Count="1" />
+      <LineId Id="430" Count="6" />
+      <LineId Id="592" Count="1" />
+      <LineId Id="899" Count="1" />
+      <LineId Id="594" Count="0" />
+      <LineId Id="437" Count="4" />
+      <LineId Id="303" Count="1" />
+      <LineId Id="306" Count="0" />
+      <LineId Id="1120" Count="100" />
+      <LineId Id="1119" Count="0" />
+      <LineId Id="307" Count="0" />
+      <LineId Id="200" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="40" Count="2" />
+      <LineId Id="251" Count="0" />
+      <LineId Id="253" Count="0" />
+      <LineId Id="252" Count="0" />
+      <LineId Id="39" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

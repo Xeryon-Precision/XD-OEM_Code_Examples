@@ -1,0 +1,808 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="XeryonDrive" Id="{6903b1ac-34a8-4f18-b448-c4393b0e95e9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK XeryonDrive
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	ActPosition : DINT;
+	Done : BOOL;
+	Busy : BOOL;
+	HasError : BOOL;
+	HasIndex : BOOL;
+	Error : XeryonDriveError;
+	MotorOn : BOOL;
+	LeftEndstop : BOOL;
+	RightEndstop : BOOL;
+END_VAR
+VAR
+	iDriveActualPosition AT %I* : DINT;
+	iDriveAmplifiersEnabled AT %I* : BOOL;
+	iDriveEndStop AT %I* : BOOL;
+	iDriveThermalProtection1 AT %I* : BOOL;
+	iDriveThermalProtection2 AT %I* : BOOL;
+	iDriveForceZero AT %I* : BOOL;
+	iDriveMotorOn AT %I* : BOOL;
+	iDriveClosedLoop AT %I* : BOOL;
+	iDriveEncoderIndex AT %I* : BOOL;
+	iDriveEncoderValid AT %I* : BOOL;
+	iDriveSearchingIndex AT %I* : BOOL;
+	iDrivePositionReached AT %I* : BOOL;
+	iDriveErrorCompensation AT %I* : BOOL;
+	iDriveEncoderError AT %I* : BOOL;
+	iDriveScanning AT %I* : BOOL;
+	iDriveLeftEndStop AT %I* : BOOL;
+	iDriveRightEndStop AT %I* : BOOL;
+	iDriveErrorLimit AT %I* : BOOL;
+	iDriveSearchingOptimalFrequency AT %I* : BOOL;
+	iDriveSafetyTimeoutTriggered AT %I* : BOOL;
+	iDriveBusy AT %I* : BOOL;
+	iDriveEmergencyStop AT %I* : BOOL;
+	iDrivePositionFail AT %I* : BOOL;
+	iDriveSlot AT %I* : USINT;
+	
+	qDriveTargetPos AT %Q* : DINT;
+	qDriveSpeed AT %Q* : DINT;
+	qDriveAcc AT %Q* : INT;
+	qDriveDec AT %Q* : INT;
+	qCommand AT %Q* : STRING(4);
+	qExecute AT %Q* : USINT;
+	
+	
+	new_TargetPos : DINT;
+	new_Speed : UDINT;
+	new_Acc : INT;
+	new_Dec : INT;
+	new_command : STRING(4);
+	
+	state : INT := 0;
+	command_start : BOOL;
+	command_done : BOOL;
+	command_irq : BOOL;
+	init_state : INT := -1;
+	
+	has_index : BOOL;
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[has_index := iDriveEncoderValid;
+ActPosition := iDriveActualPosition;
+MotorOn := iDriveMotorOn;
+LeftEndstop := iDriveLeftEndStop;
+RightEndstop := iDriveRightEndStop;
+HasIndex := has_index;
+
+// Check error bits
+IF(iDriveThermalProtection1) THEN
+	HasError := TRUE;
+	Error := XeryonDriveError.THERMAL_1;
+END_IF
+IF(iDriveThermalProtection1) THEN
+	HasError := TRUE;
+	Error := XeryonDriveError.THERMAL_2;
+END_IF
+IF(iDriveEncoderError) THEN
+	HasError := TRUE;
+	Error := XeryonDriveError.ENCODER_ERROR;
+END_IF
+IF(iDriveEmergencyStop) THEN
+	HasError := TRUE;
+	Error := XeryonDriveError.ESTOP;
+END_IF
+IF(iDriveErrorLimit) THEN
+	HasError := TRUE;
+	Error := XeryonDriveError.ERROR_LIMIT;
+END_IF
+
+CASE state OF
+	0: // Idle
+	 	IF(command_irq = TRUE) THEN
+			state := 4;
+		END_IF
+	 	IF(command_start = TRUE) THEN
+			state := 1;
+		END_IF
+		Busy := FALSE;
+	1:
+		Busy := TRUE;
+		Done := FALSE;
+		qCommand := new_command;
+		qDriveTargetPos := new_TargetPos;
+		qDriveSpeed := UDINT_TO_DINT(new_Speed);
+		qDriveAcc := new_Acc;
+		qDriveDec := new_Dec;
+		qExecute := 255;
+		command_start := FALSE;
+		command_done := FALSE;
+		IF(iDriveBusy = TRUE) THEN
+			qExecute := 0;
+			state := 2;	
+		END_IF		
+	2:	
+		IF(iDriveBusy = FALSE) THEN
+			state := 3;	
+		END_IF	
+	3: 	IF(command_done = TRUE) THEN
+			state := 0;			
+			Done := TRUE;
+		END_IF
+	 	IF(command_irq = TRUE) THEN
+			state := 4;
+		END_IF
+	// Interrupt commands 
+	4:	
+		command_irq := FALSE;
+		Busy := TRUE;
+		Done := FALSE;
+		qCommand := new_command;
+		qDriveTargetPos := new_TargetPos;
+		qDriveSpeed := UDINT_TO_DINT(new_Speed);
+		qDriveAcc := new_Acc;
+		qDriveDec := new_Dec;
+		qExecute := 255;
+		command_start := FALSE;
+		command_done := FALSE;
+		IF(iDriveBusy = TRUE) THEN
+			qExecute := 0;
+			state := 5;	
+		END_IF		
+	5:	IF(iDriveBusy = FALSE) THEN
+			qExecute := 0;
+			state := 6;	
+		END_IF	
+	6:
+		state := 0;			
+		Done := TRUE;
+	
+END_CASE
+]]></ST>
+    </Implementation>
+    <Method Name="CheckError" Id="{be3ec597-8321-4986-b5a2-d4320c676b8c}">
+      <Declaration><![CDATA[METHOD CheckError : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CheckError := FALSE;
+// Only check these two  bits when moving
+IF(iDrivePositionFail) THEN
+	HasError := TRUE;
+	Error := XeryonDriveError.POS_FAIL;
+END_IF
+IF(iDriveSafetyTimeoutTriggered) THEN
+	HasError := TRUE;
+	Error := XeryonDriveError.SAFETY_TIMEOUT;
+END_IF
+IF(HasError) THEN
+	CheckError := TRUE;	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Action Name="ClearError" Id="{33d562a0-ef5b-4301-911a-9442b0c91ea4}">
+      <Implementation>
+        <ST><![CDATA[HasError := FALSE;
+Error := XeryonDriveError.NO_ERROR;
+
+// Reset the index when clearing the error
+IF(iDriveEncoderValid) THEN
+	has_index := TRUE;
+ELSE
+	has_index := FALSE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="Enable" Id="{a3b6ceb4-20a9-48fa-ae69-fc1fa186446f}">
+      <Declaration><![CDATA[METHOD Enable : XeryonDriveStatus
+VAR_INPUT
+	val : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Enable := XeryonDriveStatus.Waiting;
+IF(state = 0) OR (state = 3) THEN
+	new_command := 'ENBL';
+	IF(val) THEN
+		new_TargetPos := 1;
+	ELSE
+		new_TargetPos := 0;
+	END_IF
+	command_start := TRUE;
+	command_irq := TRUE;
+END_IF
+IF(state = 6) THEN
+	command_done := TRUE;
+	Enable := XeryonDriveStatus.Ready;
+	// Clear error
+	IF(val) THEN
+		ClearError();
+	END_IF	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Halt" Id="{9d6801bf-8859-498b-bd0a-a0b58bb4cdd3}">
+      <Declaration><![CDATA[METHOD Halt : XeryonDriveStatus
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Halt := XeryonDriveStatus.Waiting;
+IF(state = 0) OR (state = 3)THEN
+	new_command := 'HALT';
+	command_start := TRUE;
+	command_irq := TRUE;
+END_IF
+IF(state = 6) THEN
+	command_done := TRUE;
+	Halt := XeryonDriveStatus.Ready;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Index" Id="{d7a89949-eead-4162-9511-56dbdd6b904a}">
+      <Declaration><![CDATA[METHOD Index : XeryonDriveStatus
+VAR_INPUT
+	Direction : BOOL;
+	Velocity : UDINT;
+	Acceleration: UINT;
+	Deceleration: UINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Index := XeryonDriveStatus.Waiting;
+IF(state = 0) THEN
+	// Only execute when we don't have an active error
+	IF(NOT HasError) THEN
+		IF(iDriveAmplifiersEnabled) THEN
+			new_command := 'INDX';
+			IF(Direction) THEN
+				new_TargetPos := +1;	
+			ELSE
+				new_TargetPos := -1;
+			END_IF		
+			new_Speed := Velocity;
+			new_Acc := UINT_TO_INT(Acceleration);
+			new_Dec := UINT_TO_INT(Deceleration);
+			command_start := TRUE;
+		ELSE
+			
+			HasError := TRUE;
+			IF(NOT iDriveAmplifiersEnabled) THEN
+				Error := XeryonDriveError.DRIVE_DISABLED;	
+			END_IF		
+			Index := XeryonDriveStatus.Error;	
+		END_IF
+	ELSE
+		Index := XeryonDriveStatus.Error;
+	END_IF
+END_IF
+IF(state = 3) THEN
+	// Normal flow, when index is found --> ready 
+	IF(iDriveEncoderValid) THEN
+		command_done := TRUE;
+		Index := XeryonDriveStatus.Ready;
+	END_IF
+	
+	// When hitting the endstop signal a SoftError, doesn't need a reset, but limit the motion
+	IF(iDriveEndstop) THEN
+		command_done := TRUE;
+		Index := XeryonDriveStatus.SoftError;		
+	END_IF
+	
+	// Handle drive errors
+	IF(CheckError()) THEN
+		command_done := TRUE;
+		Index := XeryonDriveStatus.Error;
+	END_IF
+END_IF
+IF(state = 6) THEN
+	Index := XeryonDriveStatus.Ready;
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Init" Id="{f8435b93-3b45-4ef3-aaf8-528b808b54c0}">
+      <Declaration><![CDATA[METHOD Init : BOOL
+VAR_IN_OUT
+	settings : ARRAY[*] OF XeryonDriveSetting;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Init := FALSE;
+
+// Start
+IF(init_state = -1) THEN
+	init_state := DINT_TO_INT(LOWER_BOUND(settings, 1));
+END_IF
+
+IF(init_state >=  LOWER_BOUND(settings, 1)) AND (init_state < UPPER_BOUND(settings, 1))  THEN
+	IF(Write(settings[init_state].setting, settings[init_state].value) <> XeryonDriveStatus.Waiting) THEN
+		init_state := init_state + 1;
+		IF(init_state = UPPER_BOUND(settings, 1)) THEN
+			init_state := -1;
+			Init := TRUE;
+		END_IF
+	END_IF
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="MoveAbsolute" Id="{cac29e84-f0d7-404f-8481-4bac1dfb823e}">
+      <Declaration><![CDATA[METHOD MoveAbsolute : XeryonDriveStatus
+VAR_INPUT
+	Position : DINT;
+	Velocity : UDINT;
+	Acceleration: UINT;
+	Deceleration: UINT;
+	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MoveAbsolute := XeryonDriveStatus.Waiting;
+IF(state = 0) THEN
+	// Only execute when we don't have an active error
+	IF(NOT HasError) THEN		
+		// Check if we have an index
+		IF(has_index) AND iDriveAmplifiersEnabled THEN
+			new_command := 'DPOS';
+			new_TargetPos := Position;
+			new_Speed := Velocity;
+			new_Acc := UINT_TO_INT(Acceleration);
+			new_Dec := UINT_TO_INT(Deceleration);
+			command_start := TRUE;
+		ELSE
+			HasError := TRUE;
+			IF(NOT has_index) THEN
+				Error := XeryonDriveError.NO_INDEX;	
+			END_IF
+			IF(NOT iDriveAmplifiersEnabled) THEN
+				Error := XeryonDriveError.DRIVE_DISABLED;	
+			END_IF
+
+			MoveAbsolute := XeryonDriveStatus.Error;
+		END_IF
+	ELSE
+		MoveAbsolute := XeryonDriveStatus.Error;
+	END_IF	
+	
+END_IF
+IF(state = 3) THEN
+	
+	// Normal flow, when position is reached  --> ready 
+	IF(iDrivePositionReached) THEN
+		command_done := TRUE;
+		MoveAbsolute := XeryonDriveStatus.Ready;
+	END_IF
+	
+	// When hitting the endstop signal a SoftError, doesn't need a reset, but limit the motion
+	IF(iDriveEndstop) THEN
+		command_done := TRUE;
+		MoveAbsolute := XeryonDriveStatus.SoftError;		
+	END_IF
+	
+	// Handle drive errors
+	IF(CheckError()) THEN
+		command_done := TRUE;
+		MoveAbsolute := XeryonDriveStatus.Error;
+	END_IF
+	
+END_IF
+IF(state = 6) THEN
+	MoveAbsolute := XeryonDriveStatus.Ready;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="MoveOpen" Id="{5bec61eb-be64-4112-abbf-9f8c73e6c1d7}">
+      <Declaration><![CDATA[METHOD MoveOpen : XeryonDriveStatus
+VAR_INPUT
+	Direction: BOOL;	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MoveOpen := XeryonDriveStatus.Waiting;
+IF(state = 0) THEN
+	IF( NOT HasError) THEN
+		IF iDriveAmplifiersEnabled THEN
+			new_command := 'MOVE';
+			IF(Direction) THEN
+				new_TargetPos := +1;	
+			ELSE
+				new_TargetPos := -1;
+			END_IF
+			new_Speed := 0;
+			new_Acc := UINT_TO_INT(0);
+			new_Dec := UINT_TO_INT(0);
+			command_start := TRUE;
+		ELSE
+			HasError := TRUE;
+			IF(NOT iDriveAmplifiersEnabled) THEN
+				Error := XeryonDriveError.DRIVE_DISABLED;	
+			END_IF		
+			MoveOpen := XeryonDriveStatus.Error;	
+		END_IF
+	ELSE
+		MoveOpen := XeryonDriveStatus.Error;
+	END_IF	
+END_IF
+IF(state = 3) THEN
+	command_done := TRUE;
+	MoveOpen := XeryonDriveStatus.Ready;
+END_IF
+IF(state = 6) THEN
+	MoveOpen := XeryonDriveStatus.Ready;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{9ecb55c1-cf98-4bc6-aa47-2e4653aaefc2}">
+      <Declaration><![CDATA[METHOD Reset : XeryonDriveStatus
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Reset := XeryonDriveStatus.Waiting;
+IF(state = 0) OR (state = 3) THEN
+	new_command := 'RSET';
+	command_start := TRUE;
+	command_irq := TRUE;
+END_IF
+IF(state = 6) THEN
+	command_done := TRUE;
+	Reset := XeryonDriveStatus.Ready;
+	
+	// Clear errors
+	ClearError();
+	
+	// Clear Index
+	has_index := FALSE;
+	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ResetEncoder" Id="{69a5e7ad-7b3e-45ee-9780-0a83108bbff8}">
+      <Declaration><![CDATA[METHOD ResetEncoder : XeryonDriveStatus
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ResetEncoder := XeryonDriveStatus.Waiting;
+IF(state = 0) OR (state = 3) THEN
+	new_command := 'ENCR';
+	command_start := TRUE;
+	command_irq := TRUE;
+END_IF
+IF(state = 6) THEN
+	command_done := TRUE;
+	ResetEncoder := XeryonDriveStatus.Ready;
+	
+	// Clear Index
+	has_index := FALSE;
+	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Scan" Id="{d3f14fe7-6bfa-4065-895d-33345dc131cf}">
+      <Declaration><![CDATA[METHOD Scan : XeryonDriveStatus
+VAR_INPUT
+	Direction: BOOL;
+	Velocity : UDINT;
+	Acceleration: UINT;
+	Deceleration: UINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Scan := XeryonDriveStatus.Waiting;
+IF(state = 0) THEN
+	IF( NOT HasError) THEN
+		IF iDriveAmplifiersEnabled THEN
+			new_command := 'SCAN';
+			IF(Direction) THEN
+				new_TargetPos := +1;	
+			ELSE
+				new_TargetPos := -1;
+			END_IF
+			new_Speed := Velocity;
+			new_Acc := UINT_TO_INT(Acceleration);
+			new_Dec := UINT_TO_INT(Deceleration);
+			command_start := TRUE;
+		ELSE
+			HasError := TRUE;
+			IF(NOT iDriveAmplifiersEnabled) THEN
+				Error := XeryonDriveError.DRIVE_DISABLED;	
+			END_IF		
+			Scan := XeryonDriveStatus.Error;	
+		END_IF
+	ELSE
+		Scan := XeryonDriveStatus.Error;
+	END_IF	
+END_IF
+IF(state = 3) THEN
+	// Normal flow, when end stop is reached  --> ready 
+	IF(((new_TargetPos = +1) AND (iDriveRightEndStop)) OR 
+	   ((new_TargetPos = -1) AND (iDriveLeftEndStop))) THEN
+		command_done := TRUE;
+		Scan := XeryonDriveStatus.Ready;
+	END_IF
+	
+	// Handle drive errors
+	IF(CheckError()) THEN
+		command_done := TRUE;
+		Scan := XeryonDriveStatus.Error;
+	END_IF	
+END_IF
+IF(state = 6) THEN
+	Scan := XeryonDriveStatus.Ready;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Stop" Id="{5ef57abf-1ef2-43a2-b21e-791191a45540}">
+      <Declaration><![CDATA[METHOD Stop : XeryonDriveStatus
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Stop := XeryonDriveStatus.Waiting;
+IF(state = 0) OR (state = 3) THEN
+	new_command := 'STOP';
+	command_start := TRUE;
+	command_irq := TRUE;
+END_IF
+IF(state = 6) THEN
+	command_done := TRUE;
+	Stop := XeryonDriveStatus.Ready;
+	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Write" Id="{3e18ae05-e84d-4962-b1be-392337d645bc}">
+      <Declaration><![CDATA[METHOD Write : XeryonDriveStatus
+VAR_INPUT
+	setting : STRING(4);
+	value : DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Write := XeryonDriveStatus.Waiting;
+IF(state = 0) THEN
+	new_command := setting;
+	new_TargetPos := value;
+	new_Speed := 0;
+	new_Acc := 0;
+	new_Dec := 0;
+	command_start := TRUE;
+END_IF
+IF(state = 3) THEN
+	command_done := TRUE;
+	Write := XeryonDriveStatus.Ready;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="XeryonDrive">
+      <LineId Id="108" Count="1" />
+      <LineId Id="213" Count="1" />
+      <LineId Id="326" Count="0" />
+      <LineId Id="334" Count="0" />
+      <LineId Id="398" Count="0" />
+      <LineId Id="333" Count="0" />
+      <LineId Id="400" Count="18" />
+      <LineId Id="399" Count="0" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="127" Count="1" />
+      <LineId Id="123" Count="2" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="152" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="151" Count="0" />
+      <LineId Id="158" Count="0" />
+      <LineId Id="153" Count="0" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="88" Count="2" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="268" Count="0" />
+      <LineId Id="95" Count="1" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="144" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="160" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="148" Count="0" />
+      <LineId Id="129" Count="0" />
+      <LineId Id="271" Count="0" />
+      <LineId Id="156" Count="1" />
+      <LineId Id="155" Count="0" />
+      <LineId Id="130" Count="7" />
+      <LineId Id="269" Count="0" />
+      <LineId Id="138" Count="2" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="141" Count="0" />
+      <LineId Id="120" Count="1" />
+      <LineId Id="142" Count="0" />
+      <LineId Id="161" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.CheckError">
+      <LineId Id="6" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="61" Count="2" />
+      <LineId Id="72" Count="3" />
+      <LineId Id="58" Count="1" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="42" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.ClearError">
+      <LineId Id="1" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="2" />
+      <LineId Id="3" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.Enable">
+      <LineId Id="6" Count="2" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="9" Count="5" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.Halt">
+      <LineId Id="6" Count="1" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.Index">
+      <LineId Id="6" Count="1" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="50" Count="2" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="86" Count="5" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="53" Count="15" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="26" Count="1" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="35" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.Init">
+      <LineId Id="6" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.MoveAbsolute">
+      <LineId Id="19" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="49" Count="8" />
+      <LineId Id="93" Count="1" />
+      <LineId Id="96" Count="2" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="64" Count="1" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="81" Count="1" />
+      <LineId Id="70" Count="2" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="78" Count="1" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="31" Count="1" />
+      <LineId Id="26" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.MoveOpen">
+      <LineId Id="108" Count="30" />
+      <LineId Id="26" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.Reset">
+      <LineId Id="6" Count="8" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.ResetEncoder">
+      <LineId Id="6" Count="8" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.Scan">
+      <LineId Id="6" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="44" Count="4" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="39" Count="2" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="64" Count="2" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="42" Count="1" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="76" Count="1" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="78" Count="2" />
+      <LineId Id="87" Count="4" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="24" Count="2" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.Stop">
+      <LineId Id="6" Count="8" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="XeryonDrive.Write">
+      <LineId Id="9" Count="9" />
+      <LineId Id="20" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

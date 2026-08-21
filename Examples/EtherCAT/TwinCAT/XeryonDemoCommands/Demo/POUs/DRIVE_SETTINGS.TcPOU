@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="DRIVE_SETTINGS" Id="{f86c3c3b-a59f-4292-bdb1-0ba73805b924}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM DRIVE_SETTINGS
+VAR
+	init : BOOL := FALSE;
+	delta_zone: DINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF init = FALSE THEN
+init := TRUE;
+
+// Drive 1
+GVL.Drive1Settings[0].setting:='4PHS';
+GVL.Drive1Settings[0].value:=0;
+//GVL.Drive1Settings[1].setting:='LLIM';
+//GVL.Drive1Settings[1].value:=-2000000;
+//GVL.Drive1Settings[2].setting:='HLIM';
+//GVL.Drive1Settings[2].value:=2000000;
+//GVL.Drive1Settings[3].setting:='ENCD';
+//GVL.Drive1Settings[3].value:=1;
+//GVL.Drive1Settings[4].setting:='ENCO';
+//GVL.Drive1Settings[4].value:=0;
+//GVL.Drive1Settings[5].setting:='INDA';
+//GVL.Drive1Settings[5].value:=1;
+//GVL.Drive1Settings[6].setting:='ISPD';
+//GVL.Drive1Settings[6].value:=5000;
+//GVL.Drive1Settings[7].setting:='ILIM';
+//GVL.Drive1Settings[7].value:=30000;
+//GVL.Drive1Settings[8].setting:='FILE';
+//GVL.Drive1Settings[8].value:=0;
+//GVL.Drive1Settings[9].setting:='ZON1';
+//GVL.Drive1Settings[9].value:=1000;
+//GVL.Drive1Settings[10].setting:='ZON2';
+//GVL.Drive1Settings[10].value:=10000;
+//delta_zone := GVL.Drive1Settings[10].value - GVL.Drive1Settings[9].value;
+//GVL.Drive1Settings[11].setting:='FREQ';
+//GVL.Drive1Settings[11].value:=173000;
+//GVL.Drive1Settings[12].setting:='FRQ2';
+//GVL.Drive1Settings[12].value:=172000;
+//GVL.Drive1Settings[13].setting:='FRAT';
+//IF delta_zone = 0 THEN
+//	GVL.Drive1Settings[13].value:=0;
+//ELSE
+//	GVL.Drive1Settings[13].value:= 65536 * (GVL.Drive1Settings[11].value - GVL.Drive1Settings[12].value) / delta_zone;	//145635;
+//END_IF
+//GVL.Drive1Settings[14].setting:='PROP';
+//GVL.Drive1Settings[14].value:=120;
+//GVL.Drive1Settings[15].setting:='PRO2';
+//GVL.Drive1Settings[15].value:=90;
+//GVL.Drive1Settings[16].setting:='PRAT';
+//IF delta_zone = 0 THEN
+//	GVL.Drive1Settings[16].value:=0;
+//ELSE
+//	GVL.Drive1Settings[16].value:= 65536 * (GVL.Drive1Settings[14].value - GVL.Drive1Settings[15].value) / delta_zone;	//2184;
+//END_IF
+//GVL.Drive1Settings[17].setting:='INTF';
+//GVL.Drive1Settings[17].value:=15; //15
+//GVL.Drive1Settings[18].setting:='CFRQ';
+//GVL.Drive1Settings[18].value:=60000; //100000
+//GVL.Drive1Settings[19].setting:='DUCO';
+//GVL.Drive1Settings[19].value:=0; //1
+//GVL.Drive1Settings[20].setting:='PTOL';
+//GVL.Drive1Settings[20].value:=100;
+//GVL.Drive1Settings[21].setting:='PTO2';
+//GVL.Drive1Settings[21].value:=160;
+//GVL.Drive1Settings[22].setting:='PHAC';
+//GVL.Drive1Settings[22].value:=0;
+//GVL.Drive1Settings[23].setting:='MIMP';
+//GVL.Drive1Settings[23].value:=5000; //5000
+//GVL.Drive1Settings[24].setting:='MAMP';
+//GVL.Drive1Settings[24].value:=65535;
+//GVL.Drive1Settings[25].setting:='SLOP';
+//GVL.Drive1Settings[25].value:= (GVL.Drive1Settings[24].value - GVL.Drive1Settings[23].value) / 192; //312;
+//GVL.Drive1Settings[26].setting:='SOFS';
+//GVL.Drive1Settings[26].value:= GVL.Drive1Settings[23].value - 64 * GVL.Drive1Settings[25].value; //-14968;
+//GVL.Drive1Settings[27].setting:='FILA';
+//GVL.Drive1Settings[27].value:=1; //1
+//GVL.Drive1Settings[28].setting:='FILP';
+//GVL.Drive1Settings[28].value:=1; //1
+//GVL.Drive1Settings[29].setting:='AMPL';
+//GVL.Drive1Settings[29].value:=65535;
+//GVL.Drive1Settings[30].setting:='PHAS';
+//GVL.Drive1Settings[30].value:=16383;
+//GVL.Drive1Settings[31].setting:='TOUT';
+//GVL.Drive1Settings[31].value:=500;
+//GVL.Drive1Settings[32].setting:='TOU2';
+//GVL.Drive1Settings[32].value:=0;
+//GVL.Drive1Settings[33].setting:='TOU3';
+//GVL.Drive1Settings[33].value:=7000;
+//GVL.Drive1Settings[34].setting:='ELIM';
+//GVL.Drive1Settings[34].value:=0;
+//GVL.Drive1Settings[35].setting:='BLCK';
+//GVL.Drive1Settings[35].value:=0;
+//GVL.Drive1Settings[36].setting:='DLAY';
+//GVL.Drive1Settings[36].value:=0;
+//GVL.Drive1Settings[37].setting:='DTIM';
+//GVL.Drive1Settings[37].value:=0;
+//GVL.Drive1Settings[38].setting:='SSPD';
+//GVL.Drive1Settings[38].value:=80250;
+//GVL.Drive1Settings[39].setting:='ACCE';
+//GVL.Drive1Settings[39].value:=65535;
+//GVL.Drive1Settings[40].setting:='DECE';
+//GVL.Drive1Settings[40].value:=10000;
+//GVL.Drive1Settings[41].setting:='PATH';
+//GVL.Drive1Settings[41].value:=1;
+//GVL.Drive1Settings[42].setting:='SLIM';
+//GVL.Drive1Settings[42].value:=100000;
+//GVL.Drive1Settings[43].setting:='ACTD';
+//GVL.Drive1Settings[43].value:=1;
+
+
+// Drive 2
+GVL.Drive2Settings[0].setting:='4PHS';
+GVL.Drive2Settings[0].value:=0;
+//GVL.Drive2Settings[1].setting:='LLIM';
+//GVL.Drive2Settings[1].value:=-40000;
+//GVL.Drive2Settings[2].setting:='HLIM';
+//GVL.Drive2Settings[2].value:=40001;
+//GVL.Drive2Settings[3].setting:='ENCD';
+//GVL.Drive2Settings[3].value:=1;
+//GVL.Drive2Settings[4].setting:='ENCO';
+//GVL.Drive2Settings[4].value:=0;
+//GVL.Drive2Settings[5].setting:='INDA';
+//GVL.Drive2Settings[5].value:=0;
+//GVL.Drive2Settings[6].setting:='ISPD';
+//GVL.Drive2Settings[6].value:=15000;
+//GVL.Drive2Settings[7].setting:='ILIM';
+//GVL.Drive2Settings[7].value:=3000;
+//GVL.Drive2Settings[8].setting:='FILE';
+//GVL.Drive2Settings[8].value:=0;
+//GVL.Drive2Settings[9].setting:='ZON1';
+//GVL.Drive2Settings[9].value:=100;
+//GVL.Drive2Settings[10].setting:='ZON2';
+//GVL.Drive2Settings[10].value:=1000;
+//delta_zone := GVL.Drive2Settings[10].value - GVL.Drive2Settings[9].value;
+//GVL.Drive2Settings[11].setting:='FREQ';
+//GVL.Drive2Settings[11].value:=87000;
+//GVL.Drive2Settings[12].setting:='FRQ2';
+//GVL.Drive2Settings[12].value:=86000;
+//GVL.Drive2Settings[13].setting:='FRAT';
+//IF delta_zone = 0 THEN
+//	GVL.Drive2Settings[13].value:=0;
+//ELSE
+//	GVL.Drive2Settings[13].value:= 65536 * (GVL.Drive2Settings[11].value - GVL.Drive2Settings[12].value) / delta_zone;	//145635;
+//END_IF
+//GVL.Drive2Settings[14].setting:='PROP';
+//GVL.Drive2Settings[14].value:=20;
+//GVL.Drive2Settings[15].setting:='PRO2';
+//GVL.Drive2Settings[15].value:=10;
+//GVL.Drive2Settings[16].setting:='PRAT';
+//IF delta_zone = 0 THEN
+//	GVL.Drive2Settings[16].value:=0;
+//ELSE
+//	GVL.Drive2Settings[16].value:= 65536 * (GVL.Drive2Settings[14].value - GVL.Drive2Settings[15].value) / delta_zone;	//2184;
+//END_IF
+//GVL.Drive2Settings[17].setting:='INTF';
+//GVL.Drive2Settings[17].value:=15;
+//GVL.Drive2Settings[18].setting:='CFRQ';
+//GVL.Drive2Settings[18].value:=30000; //30000
+//GVL.Drive2Settings[19].setting:='DUCO';
+//GVL.Drive2Settings[19].value:=1;
+//GVL.Drive2Settings[20].setting:='PTOL';
+//GVL.Drive2Settings[20].value:=160;
+//GVL.Drive2Settings[21].setting:='PTO2';
+//GVL.Drive2Settings[21].value:=160;
+//GVL.Drive2Settings[22].setting:='PHAC';
+//GVL.Drive2Settings[22].value:=0;
+//GVL.Drive2Settings[23].setting:='MIMP';
+//GVL.Drive2Settings[23].value:=5000;
+//GVL.Drive2Settings[24].setting:='MAMP';
+//GVL.Drive2Settings[24].value:=65535;
+//GVL.Drive2Settings[25].setting:='SLOP';
+//GVL.Drive2Settings[25].value:= (GVL.Drive2Settings[24].value - GVL.Drive2Settings[23].value) / 192; //312;
+//GVL.Drive2Settings[26].setting:='SOFS';
+//GVL.Drive2Settings[26].value:= GVL.Drive2Settings[23].value - 64 * GVL.Drive2Settings[25].value; //-14968;
+//GVL.Drive2Settings[27].setting:='FILA';
+//GVL.Drive2Settings[27].value:=1;
+//GVL.Drive2Settings[28].setting:='FILP';
+//GVL.Drive2Settings[28].value:=1;
+//GVL.Drive2Settings[29].setting:='AMPL';
+//GVL.Drive2Settings[29].value:=65535;
+//GVL.Drive2Settings[30].setting:='PHAS';
+//GVL.Drive2Settings[30].value:=16383;
+//GVL.Drive2Settings[31].setting:='TOUT';
+//GVL.Drive2Settings[31].value:=500;
+//GVL.Drive2Settings[32].setting:='TOU2';
+//GVL.Drive2Settings[32].value:=0;
+//GVL.Drive2Settings[33].setting:='TOU3';
+//GVL.Drive2Settings[33].value:=7000;
+//GVL.Drive2Settings[34].setting:='ELIM';
+//GVL.Drive2Settings[34].value:=0;
+//GVL.Drive2Settings[35].setting:='BLCK';
+//GVL.Drive2Settings[35].value:=0;
+//GVL.Drive2Settings[36].setting:='DLAY';
+//GVL.Drive2Settings[36].value:=5;
+//GVL.Drive2Settings[37].setting:='DTIM';
+//GVL.Drive2Settings[37].value:=0;
+//GVL.Drive2Settings[38].setting:='SSPD';
+//GVL.Drive2Settings[38].value:=150000;
+//GVL.Drive2Settings[39].setting:='ACCE';
+//GVL.Drive2Settings[39].value:=10000;
+//GVL.Drive2Settings[40].setting:='DECE';
+//GVL.Drive2Settings[40].value:=10000;
+//GVL.Drive2Settings[41].setting:='PATH';
+//GVL.Drive2Settings[41].value:=0;
+//GVL.Drive2Settings[42].setting:='SLIM';
+//GVL.Drive2Settings[42].value:=100000;
+//GVL.Drive2Settings[43].setting:='ACTD';
+//GVL.Drive2Settings[43].value:=0;
+
+GVL.Drive3Settings[0].setting:='4PHS';
+GVL.Drive3Settings[0].value:=0;
+
+GVL.Drive4Settings[0].setting:='4PHS';
+GVL.Drive4Settings[0].value:=0;
+END_IF
+]]></ST>
+    </Implementation>
+    <LineIds Name="DRIVE_SETTINGS">
+      <LineId Id="262" Count="1" />
+      <LineId Id="270" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="9" Count="21" />
+      <LineId Id="349" Count="0" />
+      <LineId Id="31" Count="4" />
+      <LineId Id="282" Count="4" />
+      <LineId Id="37" Count="5" />
+      <LineId Id="274" Count="1" />
+      <LineId Id="278" Count="0" />
+      <LineId Id="277" Count="0" />
+      <LineId Id="43" Count="13" />
+      <LineId Id="478" Count="0" />
+      <LineId Id="58" Count="31" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="671" Count="0" />
+      <LineId Id="670" Count="0" />
+      <LineId Id="673" Count="0" />
+      <LineId Id="672" Count="0" />
+      <LineId Id="695" Count="0" />
+      <LineId Id="694" Count="0" />
+      <LineId Id="487" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="93" Count="21" />
+      <LineId Id="350" Count="0" />
+      <LineId Id="115" Count="4" />
+      <LineId Id="334" Count="4" />
+      <LineId Id="121" Count="4" />
+      <LineId Id="305" Count="4" />
+      <LineId Id="127" Count="16" />
+      <LineId Id="289" Count="1" />
+      <LineId Id="287" Count="0" />
+      <LineId Id="147" Count="26" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="678" Count="2" />
+      <LineId Id="677" Count="0" />
+      <LineId Id="696" Count="0" />
+      <LineId Id="175" Count="0" />
+      <LineId Id="708" Count="1" />
+      <LineId Id="707" Count="0" />
+      <LineId Id="711" Count="1" />
+      <LineId Id="710" Count="0" />
+      <LineId Id="718" Count="0" />
+      <LineId Id="364" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
