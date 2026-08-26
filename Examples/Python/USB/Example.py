@@ -1,12 +1,12 @@
 from Xeryon import *                                    # Import the Xeryon library
 from matplotlib import pyplot as plt                    # Import the matplotlib library
 
-controller  = Xeryon("COM34", 115200)                   # Setup serial communication, select the correct COM-port and baudrate
-axisX       = controller.addAxis(Stage.XRTU_30_3, "X")    # Add all axis and specify the correct encoder resolution, and give the axis a letter
+controller  = Xeryon("COM52", 115200)                   # Setup serial communication, select the correct COM-port and baudrate
+axisX       = controller.addAxis(Stage.XLS_312, "X")    # Add all axis and specify the correct encoder resolution, and give the axis a letter
 
 controller.start()              # Start the controller
 axisX.findIndex()               # Search for the index
-axisX.setUnits(Units.deg)        # Set units to mm
+axisX.setUnits(Units.mm)        # Set units to mm
 axisX.startLogging()            # Start logging
 
 axisX.startScan(-1)             # Start scan in the -1 direction
@@ -22,27 +22,24 @@ axisX.stopScan()                # Stop scan
 time.sleep(2)                   # Wait 2 seconds
 axisX.startScan(-1, 1)          # Start scan in the -1 direction for 1 second
 time.sleep(2)                   # Wait 2 seconds
-print("1")
+
 axisX.setDPOS(0)                # Go to position 0 mm
-print("2")
 time.sleep(2)                   # Wait 2 seconds
-axisX.setDPOS(4)               # Go to position 10 mm
+axisX.setDPOS(10)               # Go to position 10 mm
 time.sleep(2)                   # Wait 2 seconds
 axisX.setSpeed(200)             # Set speed to 200 mm/s
-axisX.setDPOS(-4)              # Go to position -10 mm
+axisX.setDPOS(-10)              # Go to position -10 mm
 time.sleep(2)                   # Wait 2 seconds
 axisX.setDPOS(0)                # Go to position 0 mm
 time.sleep(2)                   # Wait 2 seconds
 
-for _ in range(0,4):           # Step 10 x 1 mm
+for _ in range(0,10):           # Step 10 x 1 mm
     axisX.step(1)               # Step 1 mm
     time.sleep(0.5)             # Wait 0.5 seconds
 time.sleep(2)                   # Wait 2 seconds
 
-axisX.setUnits(Units.mrad)        # Set units to mu
-print("3")
-axisX.setDPOS(-4000)           # Go to position -10000 mu
-print("4")
+axisX.setUnits(Units.mu)        # Set units to mu
+axisX.setDPOS(-10000)           # Go to position -10000 mu
 time.sleep(2)                   # Wait 2 seconds
 
 print("Bit  0 = ", axisX.isAmplifiersEnabled())         # Check bit 0
