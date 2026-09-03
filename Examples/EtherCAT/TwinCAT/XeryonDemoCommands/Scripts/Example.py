@@ -1,4 +1,4 @@
-from Xeryon import *                                     # Import the Xeryon library
+from Examples.EtherCAT.TwinCAT.XeryonDemoCommands.Scripts.Xeryon_EtherCAT import *                                     # Import the Xeryon library
 import threading                                         # Needed to run multiple stages truly in parallel
 from matplotlib import pyplot as plt                     # Import the matplotlib library
 

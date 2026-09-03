@@ -8,7 +8,7 @@ PLC symbols exposed by the accompanying TwinCAT project (see `../Demo`).
 
 | File | Description |
 |---|---|
-| `Xeryon.py` | The Xeryon control library. Wraps the PLC's `MAIN.DriveX` symbols (position, speed, status bits, ...) in a Python API: `Xeryon`, `Communication`, `Axis`, `Units`, `Stage`. |
+| `Xeryon_EtherCAT.py` | The Xeryon control library. Wraps the PLC's `MAIN.DriveX` symbols (position, speed, status bits, ...) in a Python API: `Xeryon`, `Communication`, `Axis`, `Units`, `Stage`. |
 | `Example.py` | Example script showing how to configure one or more drives/axes, home them, run scans and moves in parallel threads, read status bits, and log/plot position data. |
 
 ## Requirements
@@ -45,7 +45,7 @@ pip install pyads matplotlib
      Drives on a physically separate PLC need a different `net_id`/`port`.
    - `drive_base` — the PLC symbol prefix for that EtherCAT slave, matching the
      `MAIN.DriveX` struct in the TwinCAT project.
-   - `stage` — the connected stage type, from the `Stage` enum in `Xeryon.py`.
+   - `stage` — the connected stage type, from the `Stage` enum in `Xeryon_EtherCAT.py`.
 
 3. Run the script:
 
@@ -58,10 +58,10 @@ absolute/relative moves, stepping) in its own thread so multiple stages move
 concurrently. Status bits are printed per axis, and (if logging captured data)
 an `EPOS` plot is shown per axis at the end.
 
-## Using `Xeryon.py` in your own script
+## Using `Xeryon_EtherCAT.py` in your own script
 
 ```python
-from Xeryon import *
+from Xeryon_EtherCAT import *
 
 controller = Xeryon('127.0.0.1.1.1', pyads.PORT_TC3PLC1, drive_base="MAIN.Drive1")
 axis = controller.addAxis(Stage.XLA_78)
@@ -98,7 +98,7 @@ completes.
 ## Notes
 
 - `DEBUG_MODE`, `OUTPUT_TO_CONSOLE`, `DISABLE_WAITING`, `AUTO_SEND_SETTINGS`
-  and `AUTO_SEND_ENBL` at the top of `Xeryon.py` are global switches that
+  and `AUTO_SEND_ENBL` at the top of `Xeryon_EtherCAT.py` are global switches that
   control console logging verbosity, whether blocking calls actually wait for
   the controller, and automatic settings/enable behavior on start/reset.
 - `__pycache__/` contains compiled bytecode and is not part of the source.
